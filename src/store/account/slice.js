@@ -43,17 +43,21 @@ export const accountSlice = createSlice({
       state.savings = state.savings + action.payload;
     },
     cardLimits: (state, action) => {
-      const cardId = action.payload;
-      const updatedLimit = state.cards.map((l) => {
-        if (l.id === cardId) {
-          return { ...l, limit: !l.limit };
+      const { id, limit } = action.payload;
+      console.log(id);
+      const updatedLimit = state.cards.map((card) => {
+        if (card.id === id) {
+          return { ...card, limit: limit };
         } else {
-          return l;
+          return card;
         }
       });
       console.log("Card Id :", updatedLimit);
-      state.cards = updatedLimit;
-      //   state.limit.push(updatedLimit[cardId]);
+      state.cards = [...updatedLimit];
+    },
+    privatedOnChange: (state, action) => {
+      console.log(`checkboz payload is ${action.payload}`);
+      state.privateMode = action.payload;
     },
   },
 });
@@ -65,5 +69,6 @@ export const {
   toChecking,
   toSaving,
   cardLimits,
+  privatedOnChange,
 } = accountSlice.actions;
 export default accountSlice.reducer;

@@ -16,6 +16,7 @@ import {
   toChecking,
   toSaving,
   cardLimits,
+  privatedOnChange,
 } from "../store/account/slice";
 import RangeSlider from "react-bootstrap-range-slider";
 import BootstrapSwitchButton from "bootstrap-switch-button-react";
@@ -33,6 +34,8 @@ const HomePage = () => {
     button: 1,
   };
   const [limit, setLimit] = useState(0);
+  const [privated, setPrivated] = useState(privateMode);
+  console.log(`privatteteee ${privateMode}`);
 
   const handleOnClick = (id) => {
     dispatch(blockedToggle(id));
@@ -67,6 +70,9 @@ const HomePage = () => {
   };
 
   // Card Limit
+  const changeLimit = (id) => {
+    dispatch(cardLimits({ id, limit }));
+  };
   //   const changeLimit = (id) => {
   //     console.log(limit);
   //     dispatch(cardLimits(id));
@@ -76,14 +82,12 @@ const HomePage = () => {
   //   }
 
   //   changeLimit();
+
   //Private Mode
-  const privateOnChange = () => {
-    let x = document.getElementById("checkbox");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
-    }
+  const privatedChange = () => {
+    setPrivated(!privated);
+
+    dispatch(privatedOnChange(!privated));
   };
 
   return (
@@ -94,13 +98,13 @@ const HomePage = () => {
           <input
             type="checkbox"
             // checked={item.completed ? true : false}
-            onChange={() => privateOnChange()}
-            checked={privateMode}
+            checked={privated}
+            onChange={() => privatedChange()}
           />
-          <h3 className="mt-2">
-            Checking Account : <span id="checking">{checking}</span>
+          <h3 className={`mt-2 ${privated ? "private" : ""}`}>
+            Checking Account : <span id="checking ">{checking}</span>
           </h3>
-          <h3>
+          <h3 className={`mt-2 ${privated ? "private" : ""}`}>
             Savings : <span id="saving">{savings}</span>
           </h3>
           <div className="backColor3">
@@ -201,7 +205,14 @@ const HomePage = () => {
                     max={card.max}
                     step={10}
                     id={card.id}
-                    onChange={(e) => setLimit(e.target.value)}
+                    onChange={(e) => {
+                      changeLimit(card.id);
+
+                      console.log(
+                        `target value is ${card.id} ${e.target.value}`
+                      );
+                      setLimit(e.target.value);
+                    }}
                     // onSubmit={() => changeLimit(card.id)}
                   />
                   {/* <span>{card.limit}</span> */}
